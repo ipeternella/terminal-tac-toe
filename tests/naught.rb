@@ -18,6 +18,7 @@ available_spaces.each do |as|
   # returns pc move that finishes the game
   if game_is_over(board)
     best_move = as.to_i
+    # restores board to available space
     board[as.to_i] = as
     return best_move
   else
@@ -40,5 +41,5 @@ if best_move
 else
   # returns random pc move
   n = rand(0..available_spaces.count)
-  return available_spaces[n].to_i
+  return available_spaces[no].to_i
 end

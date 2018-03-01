@@ -8,11 +8,11 @@
 
 class Game
 
-  attr_reader :size, :com_mark, :hum_mark, :board
+  attr_reader :n, :com_mark, :hum_mark, :board
   
   def initialize
     @board = ["0", "1", "2", "3", "4", "5", "6", "7", "8"] # contents = str, indexes = board
-    @size = 3
+    @n = 3
     @com_mark = "X" # the computers marker
     @hum_mark = "O" # the users marker
     @difficulty = nil
@@ -27,10 +27,12 @@ class Game
     puts "Enter [0-8]:"
 
     # loop through until the game was won or tied
-    until is_game_over(@board, @size) || tie(@board)
+    until is_game_over(@board, @n) || tie(@board)
 
+      # mutates the board
       get_human_spot
-      if !is_game_over(@board, @size) && !tie(@board)
+      
+      if !is_game_over(@board, @n) && !tie(@board)
         eval_board
       end
       puts " #{@board[0]} | #{@board[1]} | #{@board[2]} \n===+===+===\n #{@board[3]} | #{@board[4]} | #{@board[5]} \n===+===+===\n #{@board[6]} | #{@board[7]} | #{@board[8]} \n"
@@ -77,7 +79,7 @@ class Game
     end
     
     # validates min and max spots
-    if spot.between?(0, @size ** 2 - 1)
+    if spot.between?(0, @n ** 2 - 1)
 
       # validates when a board is already marked
       if board[spot] != @com_mark && board[spot] != @hum_mark
@@ -92,7 +94,7 @@ class Game
   end
 
   def get_human_spot
-    # gets human spot
+    # gets human spot and mutates the board
     
     spot = nil
     until spot
@@ -101,6 +103,7 @@ class Game
 
       # tests if the slot is empty on the board
       if is_valid_spot(spot, @board)
+        # mutates the board
         @board[spot.to_i] = @hum_mark
       else
         spot = nil
@@ -123,93 +126,109 @@ class Game
 
     return available_spaces
   end
+  
   def eval_board
     spot = nil
     
     until spot
-      
-      if @board[4] == "4" # if 4 is empty, computer makes its move there
-        spot = 4
-        @board[spot] = @com_mark
-      else # if 4 is not empty
-        spot = get_best_move(@board, @com_mark) # gets int with index
-        if @board[spot] != "X" && @board[spot] != "O" 
-          # sets best move for pc
-          @board[spot] = @com_mark
-        else
-          spot = nil
-        end
-      end
-      
+      spot = get_com_move(@board, @difficulty)
+      @board[spot] = @com_mark
+
+      as = get_available_spaces(@board)
+      puts "AFTER PC MOVE: #{as}"
+
     end
   end
 
-  def get_com_move(board, difficulty, random_gen=nil)
+  def get_random_move(board, random_gen=nil)
     as = get_available_spaces(board)
 
     # checks for seed (used for testing)
     if !random_gen
       random_gen = Random.new
     end
+    
+    # random ix for as array
+    random_ix = random_gen.rand(0 .. as.length - 1)
+    move = as[random_ix].to_i
+    
+    return move
+  end
+
+  def get_move_to_win(board, player_mark)
+    as = get_available_spaces(board)
+    
+    as.each do |as|
+      # sets a mark on an available spot
+      board[as.to_i] = player_mark
+      
+      # checks if the mark will finish the game, so pc must block it
+      if is_game_over(board, @n)
+        move = as.to_i
+        
+        # mutates board back to its original state
+        board[as.to_i] = as
+        
+        return move
+      end
+
+      # mutates board back to its original state
+      board[as.to_i] = as
+    end
+
+    # if no move is about to finish the game
+    return nil
+  end
+  
+  def get_com_move(board, difficulty, random_gen=nil)
+    as = get_available_spaces(board)
+
+    puts "BEFORE PC MOVE: #{as}"
       
     case difficulty
     when 1 # newbie
-      # here, PC makes random moves only            
-      move = random_gen.rand(as.first.to_i .. as.last.to_i)
-
-      return move
+      return get_random_move(board)
+      
     when 2 # medium
-      # PC makes random movies but blocks if user is about to win
+      # gets move to block the player
+      move = get_move_to_win(board, @hum_mark)
 
+      if move.nil?
+        # no move is about to finish the game
+        return get_random_move(board)
+      else
+        # player is about to win and pc must block it
+        return move
+      end
       
       return nil
     when 3 # hard
-      return nil
+      # here, pc blocks player but also scans for plays to win
+      
+      # checks if pc can win with next move
+      move = get_move_to_win(board, @com_mark)
+
+      # pc cannot win, so checks if player is about to
+      if move.nil?
+
+        move = get_move_to_win(board, @hum_mark)
+
+        if move.nil?
+          # next player cannot win too
+          return get_random_move(board)
+        else
+          # returns move to block human
+          return move
+        end
+        
+      else
+        # returns move for the pc to win
+        return move
+      end
+     
     end
   end
   
-  def get_best_move(board, next_player, depth = 0, best_score = {})
-    available_spaces = [] # available spaces on board
-    best_move = nil       # best move
-
-    # traverses board array --> part
-    board.each do |s|
-      # if slot is available
-      if s != "X" && s != "O"
-        # appends available spaces
-        available_spaces << s
-      end
-    end
-
-    # traverses available spaces to set computer mark
-    available_spaces.each do |as|
-      # sets computer move
-      board[as.to_i] = @com_mark
-
-      # returns move that finishes the game
-      if game_is_over(board)
-        best_move = as.to_i
-        board[as.to_i] = as
-        return best_move
-      else
-        board[as.to_i] = @hum_mark
-        if game_is_over(board)
-          best_move = as.to_i
-          board[as.to_i] = as
-          return best_move
-        else
-          board[as.to_i] = as
-        end
-      end
-    end
-    if best_move
-      return best_move
-    else
-      n = rand(0..available_spaces.count)
-      return available_spaces[n].to_i
-    end
-  end
-
   def horizontal_scan(board, n)
     row_values = []
     count = 0
@@ -287,6 +306,7 @@ class Game
       end
     end
 
+    # last value is always a non diagonal one, so drop it
     diag_values = diag_values[0...-1] 
     
     if diag_values.uniq.length == 1
