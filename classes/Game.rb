@@ -9,51 +9,52 @@ class Game
   include BoardScans
   include GameConfig
 
-  # attribute readers
-  attr_reader :n, :com_mark, :hum_mark, :board
+  # attribute readers (testing
+  attr_reader :board, :n, :p1_mark, :p2_mark, :difficulty, :game_type
   
-  def initialize
-    @board = ["0", "1", "2", "3", "4", "5", "6", "7", "8"] # contents = str, indexes = board
-    @n = 4             # number of rows and cols of the board
-    @p1_mark = "X"    # the computers marker
-    @p2_mark = "O"    # the users marker
-    @difficulty = nil  # game difficulty level
-    @game_type = nil   # game type: player vs com, player vs player or com vs com
+  def initialize    
+    @board      = nil    # string array with number indexes
+    @n          = nil    # number of rows and cols of the board
+    @p1_mark    = nil    # player 1 mark
+    @p2_mark    = nil    # player 2 (another human or PC) mark
+    @difficulty = nil    # game difficulty level
+    @game_type  = nil    # game type: player vs com, player vs player or com vs com
   end
 
   def start_game
-    
+    # gets board size (number of rows/cols): min = 3, max = 5 
     @n = get_board_size
-    @board = get_board(@n)    
-    #puts_board2(@board, @n)
-    
+
+    # intializes a board for the given size
+    @board = get_board(@n)
+        
     # puts welcome msg to the player
     puts_welcome
     
-    # asks for game type
+    # gets game type
     @game_type = get_game_type
     
-    # game markers customization
-    game_markers = get_game_markers
+    # gets game marks
+    game_markers = get_game_markers    
     @p1_mark = game_markers[:p1_mark]
     @p2_mark = game_markers[:p2_mark]
-        
+
+    # gets pc difficulty only when a computer is involved
     case @game_type
     when 1, 3
-      # gets pc difficulty only when a computer is involved
       @difficulty = get_game_difficulty
     end
-    
+
+    # starts evaluating the board as the game goes on
     eval_board(@board, @n, @game_type, @difficulty, @p1_mark, @p2_mark)
   end
     
-  def eval_board(board, n, game_type, difficulty, p1_mark, p2_mark)
-    
+  def eval_board(board, n, game_type, difficulty, p1_mark, p2_mark)    
     # initial printing of the board
     puts_board(board, n)
-    puts "enter [0-8]:"
+    puts "enter [0-#{n * n}]:"
     
-    # game events based on game_type: com vs com, player vs com...
+    # game events based on game_type: com vs com, player vs com or com vs com
     case game_type           
     when 1
       # player vs computer
@@ -145,69 +146,72 @@ class Game
     return vertical_scan(board, n) || horizontal_scan(board, n) || diag_scan(board, n) || tie(board, p1_mark, p2_mark)
   end
   
-  # def puts_board(board)
-  #   puts " #{@board[0]} | #{@board[1]} | #{@board[2]} \n===+===+===\n #{@board[3]} | #{@board[4]} | #{@board[5]} \n===+===+===\n #{@board[6]} | #{@board[7]} | #{@board[8]} \n"
-  #   #puts "Enter [0-8]:"
-  # end
-
   def puts_board(board, n)
     ncol = n
     nrow = n
     index = 0
 
     while nrow > 1
-      # row print
+      # prints row cells
       while ncol > 1
-
-        if (index <= 9) || !is_valid_number(board[index])
-          print "  #{board[index]} |"
-        else
-          print " #{board[index]} |" 
-        end
+        print_cell(board, index, false)
 
         index += 1
         ncol -= 1
       end
 
-      # end of line of numbers
-      if (index <= 9)  || !is_valid_number(board[index])
-        print "  #{board[index]}\n"
-      else
-        print " #{board[index]}\n"
-      end
-#      print " #{board[index]}\n"
+      # prints last cell of the line
+      print_cell(board, index, true)
+      
       index += 1
       ncol = n
+
+      # prints horizontal bars
+      print_horizontal_bars(ncol)
       
-      while ncol > 1
-        print "====+"
-        ncol -= 1
-      end
-      
-      # end of line of symbols
-      print "====\n"
       ncol = n
       nrow -= 1
     end
 
     # prints last row
     while ncol > 1
-      if (index <= 9) || !is_valid_number(board[index])
-        print "  #{board[index]} |"
-      else
-        print " #{board[index]} |"
-      end
-
+      print_cell(board, index, false)
+      
       index += 1
       ncol -= 1
     end
 
     # last col
-    if (index <= 9)  || !is_valid_number(board[index])
-      print "  #{board[index]}\n"
-    else
-      print " #{board[index]}\n"
-    end
-
+    print_cell(board, index, true)
   end
+
+  def print_cell(board, index, is_end_of_line)
+    if !is_end_of_line
+      if (index <= 9) || !is_valid_number(board[index])
+        print "  #{board[index]} |"
+      else
+        print " #{board[index]} |" 
+      end
+    else
+      # end of line of numbers
+      if (index <= 9)  || !is_valid_number(board[index])
+        print "  #{board[index]}\n"
+      else
+        print " #{board[index]}\n"
+      end
+      
+    end    
+  end
+
+  def print_horizontal_bars(ncol)
+    # prints horizontal bars for every cell
+    while ncol > 1
+      print "====+"
+      ncol -= 1
+    end
+    
+    # prints horizontal bar for the last cell of the row
+    print "====\n"    
+  end
+    
 end
