@@ -1,4 +1,4 @@
-require_relative "../tictactoe"
+require_relative "../classes/Game"
 require "test/unit"
 
 class TestTicTacToe < Test::Unit::TestCase
