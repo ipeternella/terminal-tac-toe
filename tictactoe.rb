@@ -1,56 +1,34 @@
-# coding: utf-8
-=begin
-[objetivo]: melhorar o codigo + adicionar novas features;
-- Adicionar tratamento de entradas válidas;
-- Permitir a seleção da modalidade de jogo: fácil, médio ou difícil (hoje está sempre no difícil);
-- Permitir a seleção do tipo de jogo: computador vs computador, player vs player ou computador vs player;
-=end
-
 class Game
 
   attr_reader :n, :com_mark, :hum_mark, :board
   
   def initialize
     @board = ["0", "1", "2", "3", "4", "5", "6", "7", "8"] # contents = str, indexes = board
-    @n = 3
-    @com_mark = "X" # the computers marker
-    @hum_mark = "O" # the users marker
-    @difficulty = nil
+    @n = 3             # number of rows and cols of the board
+    @com_mark = "X"    # the computers marker
+    @hum_mark = "O"    # the users marker
+    @difficulty = nil  # game difficulty level
+    @game_type = nil   # game type: player vs com, player vs player or com vs com
   end
 
   def start_game
     # main function of the game: main loop
-    @difficulty = get_game_difficulty
-    
-    # start by printing the board
-    puts " #{@board[0]} | #{@board[1]} | #{@board[2]} \n===+===+===\n #{@board[3]} | #{@board[4]} | #{@board[5]} \n===+===+===\n #{@board[6]} | #{@board[7]} | #{@board[8]} \n"
-    puts "Enter [0-8]:"
+    @game_type = get_game_type
 
-    # loop through until the game was won or tied
-    until is_game_over(@board, @n) || tie(@board)
-
-      # mutates the board
-      get_human_spot
-      
-      if !is_game_over(@board, @n) && !tie(@board)
-        eval_board
-      end
-      puts " #{@board[0]} | #{@board[1]} | #{@board[2]} \n===+===+===\n #{@board[3]} | #{@board[4]} | #{@board[5]} \n===+===+===\n #{@board[6]} | #{@board[7]} | #{@board[8]} \n"
+    case @game_type
+    when 1, 3
+      # gets pc difficulty only when a computer is involved
+      @difficulty = get_game_difficulty
     end
-
-    
-    # # loop through until the game was won or tied
-    # until game_is_over(@board) || tie(@board)
-    #   get_human_spot
-    #   if !game_is_over(@board) && !tie(@board)
-    #     eval_board
-    #   end
-    #   puts " #{@board[0]} | #{@board[1]} | #{@board[2]} \n===+===+===\n #{@board[3]} | #{@board[4]} | #{@board[5]} \n===+===+===\n #{@board[6]} | #{@board[7]} | #{@board[8]} \n"
-    # end
-    
-    puts "Game over"
+        
+    eval_board(@board, @n, @game_type, @difficulty, @hum_mark, @com_mark)        
+ end
+  
+  def puts_board(board)
+    puts " #{@board[0]} | #{@board[1]} | #{@board[2]} \n===+===+===\n #{@board[3]} | #{@board[4]} | #{@board[5]} \n===+===+===\n #{@board[6]} | #{@board[7]} | #{@board[8]} \n"
+    #puts "Enter [0-8]:"
   end
-
+  
   def get_game_difficulty
     # reads 
     difficulty = nil
@@ -70,7 +48,26 @@ class Game
     return difficulty
   end
 
-  def is_valid_spot(spot, board)
+  def get_game_type
+    # reads 
+    game_type = nil
+    
+    puts " Choose the game type level:"
+    puts " 1 - Player vs Computer\n 2 - Player vs Player\n 3 - Computer vs Computer)"
+
+    until game_type
+      game_type = gets.chomp.to_i
+
+      if !game_type.between?(1,3)
+        game_type = nil
+      end
+      
+    end
+
+    return game_type
+  end
+  
+  def is_valid_spot(spot, board, p1_mark, p2_mark)
     # checks if input contains a valid int
     if !(Integer(spot) rescue false)
       return false
@@ -82,7 +79,7 @@ class Game
     if spot.between?(0, @n ** 2 - 1)
 
       # validates when a board is already marked
-      if board[spot] != @com_mark && board[spot] != @hum_mark
+      if board[spot] != p1_mark && board[spot] != p2_mark
         return true
       else
         return false
@@ -93,20 +90,20 @@ class Game
     end
   end
 
-  def get_human_spot
+  def get_human_move(board, p1_mark, p2_mark)
     # gets human spot and mutates the board
     
-    spot = nil
-    until spot
+    move = nil
+    until move
       # reads player input as string
-      spot = gets.chomp
-
+      move = gets.chomp
+      
       # tests if the slot is empty on the board
-      if is_valid_spot(spot, @board)
-        # mutates the board
-        @board[spot.to_i] = @hum_mark
+      if is_valid_spot(move, board, p1_mark, p2_mark)
+        # returns AS INTEGER
+        return move.to_i        
       else
-        spot = nil
+        move = nil
       end
     end
   end
@@ -127,17 +124,97 @@ class Game
     return available_spaces
   end
   
-  def eval_board
-    spot = nil
+  def eval_board(board, n, game_type, difficulty, p1_mark, p2_mark)    
+    # initial printing of the board
+    puts_board(@board)
+    puts "enter [0-8]:"
     
-    until spot
-      spot = get_com_move(@board, @difficulty)
-      @board[spot] = @com_mark
+    # game events based on game_type: com vs com, player vs com...
+    case game_type           
+    when 1
+      # player vs computer
+      loop do
+        # gets human move (int)
+        hum_move = get_human_move(board, p1_mark, p2_mark)
+        board[hum_move] = p1_mark
 
-      as = get_available_spaces(@board)
-      puts "AFTER PC MOVE: #{as}"
+        # checks if game is over
+        break if is_game_over(board, n)
+        
+        # gets computer move
+        com_move = get_com_move(board, difficulty, p2_mark, p1_mark)
+        board[com_move] = p2_mark
 
+        # checks if game is ove
+        break if is_game_over(board, n)
+
+        # as = get_available_spaces(board)
+        # puts "AFTER PC MOVE: #{as}"
+
+        # reprint the board after evaluation
+        puts_board(@board)
+        
+      end
+
+      # final board printing
+      puts_board(@board)        
+      
+    when 2
+      # player vs player
+      loop do
+        # gets human move (int)
+        hum_move = get_human_move(board, p1_mark, p2_mark)
+        board[hum_move] = p1_mark
+        
+        # prints p1 move
+        puts_board(@board)        
+        
+        # checks if game is over
+        break if is_game_over(board, n)
+        
+        # gets computer move
+        hum_move2 = get_human_move(board, p2_mark, p1_mark)
+        board[hum_move2] = p2_mark
+        
+        # checks if game is ove
+        break if is_game_over(board, n)
+        
+        # reprint the board after evaluation
+        puts_board(@board)
+        
+      end
+
+      # final board printing
+      puts_board(@board)        
+        
+    when 3
+      # computer vs computer
+      loop do
+        # pc1 movement
+        com_move = get_com_move(board, difficulty, p1_mark, p2_mark)
+        board[com_move] = p1_mark
+        
+        # prints p1 move
+        puts_board(@board)        
+        
+        # checks if game is over
+        break if is_game_over(board, n)
+        
+        # pc2 movement
+        com_move2 = get_com_move(board, difficulty, p2_mark, p1_mark)
+        board[com_move2] = p2_mark
+        
+        # checks if game is ove
+        break if is_game_over(board, n)
+
+        # reprint the board after evaluation
+        puts_board(@board)
+        
+      end
     end
+
+    puts "Game over"
+    
   end
 
   def get_random_move(board, random_gen=nil)
@@ -151,7 +228,8 @@ class Game
     # random ix for as array
     random_ix = random_gen.rand(0 .. as.length - 1)
     move = as[random_ix].to_i
-    
+
+    # returns int move
     return move
   end
 
@@ -180,7 +258,7 @@ class Game
     return nil
   end
   
-  def get_com_move(board, difficulty, random_gen=nil)
+  def get_com_move(board, difficulty, random_gen=nil, player_mark, adversary_mark)
     as = get_available_spaces(board)
 
     puts "BEFORE PC MOVE: #{as}"
@@ -191,7 +269,7 @@ class Game
       
     when 2 # medium
       # gets move to block the player
-      move = get_move_to_win(board, @hum_mark)
+      move = get_move_to_win(board, adversary_mark)
 
       if move.nil?
         # no move is about to finish the game
@@ -206,12 +284,12 @@ class Game
       # here, pc blocks player but also scans for plays to win
       
       # checks if pc can win with next move
-      move = get_move_to_win(board, @com_mark)
+      move = get_move_to_win(board, player_mark)
 
       # pc cannot win, so checks if player is about to
       if move.nil?
 
-        move = get_move_to_win(board, @hum_mark)
+        move = get_move_to_win(board, adversary_mark)
 
         if move.nil?
           # next player cannot win too
@@ -318,19 +396,7 @@ class Game
   end
   
   def is_game_over(board, n)
-    return vertical_scan(board, n) || horizontal_scan(board, n) || diag_scan(board, n)
-  end
-  
-  def game_is_over(b)
-    # # checks if uniq return only one marker which means someone has won
-    # [b[0], b[1], b[2]].uniq.length == 1 ||
-    # [b[3], b[4], b[5]].uniq.length == 1 ||
-    # [b[6], b[7], b[8]].uniq.length == 1 ||
-    # [b[0], b[3], b[6]].uniq.length == 1 ||
-    # [b[1], b[4], b[7]].uniq.length == 1 ||
-    # [b[2], b[5], b[8]].uniq.length == 1 ||
-    # [b[0], b[4], b[8]].uniq.length == 1 ||
-    # [b[2], b[4], b[6]].uniq.length == 1
+    return vertical_scan(board, n) || horizontal_scan(board, n) || diag_scan(board, n) || tie(board)
   end
 
   def tie(b)
