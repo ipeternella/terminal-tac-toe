@@ -1,3 +1,7 @@
+# ------------------------------------------------------------------------
+# This file contains some test examples of the application.
+# ------------------------------------------------------------------------
+
 require_relative "../classes/Game"
 require "test/unit"
 

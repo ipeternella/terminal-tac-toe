@@ -1,11 +1,50 @@
-module BoardScans
+# ------------------------------------------------------------------------
+# This module contains functions to scan the board to determine
+# whether a match is over or not. It contains vertical, horizontal
+# diagonal and tie scans.
+# ------------------------------------------------------------------------
+
+module BoardScans  
 
   def tie(board, p1_mark, p2_mark)
-    # checks if whole board array is filled
-    board.all? { |s| s == p1_mark || s == p2_mark }
+    # This function scans the board values for ties, i.e., the whole string array is filled
+    # but without any vertical, horizontal or diagonal wins.
+    #
+    # Example (3x3 board):
+    #
+    #            X | O | X 
+    #           ===+===+===
+    #            X | O | O               
+    #           ===+===+===
+    #            O | X | X 
+    # 
+    # @argument board is a reference to the string array (board).
+    # @argument p1_mark is a string (single char) used as player 1's mark on the board
+    # @argument p2_mark is a string (single char) used as player 2's mark on the board
+    #
+    # @return true for ties and, otherwise, false.
+    
+    # checks if whole board array is filled with players marks
+    return board.all? { |s| s == p1_mark || s == p2_mark }
   end
 
   def horizontal_scan(board, n)
+    # This function scans the board values to see if a player has won
+    # horizontally.
+    #
+    # Example (3x3 board):
+    #
+    #            X | X | X 
+    #           ===+===+===
+    #            - | - | -               
+    #           ===+===+===
+    #            - | - | - 
+    #
+    # @argument board is a reference to the string array (board).
+    # @argument n is the board size (number of rows/cols).
+    #
+    # @return true if a player has won horizontally. Otherwise, returns false.
+        
     row_values = []
     count = 0
     
@@ -29,6 +68,22 @@ module BoardScans
   end
   
   def vertical_scan(board, n)
+    # This function scans the board values to see if a player has won
+    # vertically.
+    #
+    # Example (3x3 board):
+    #
+    #            - | X | - 
+    #           ===+===+===
+    #            - | X | -               
+    #           ===+===+===
+    #            - | X | - 
+    #
+    # @argument board is a reference to the string array (board).
+    # @argument n is the board size (number of rows/cols).
+    #
+    # @return true if a player has won vertically. Otherwise, returns false.
+    
     col_values = []
     nrow = n
     i = 0
@@ -58,6 +113,22 @@ module BoardScans
   end
 
   def diag_scan(board, n)
+    # This function scans the board values to see if a player has won
+    # diagonally.
+    #
+    # Example (3x3 board):
+    #
+    #            - | - | X 
+    #           ===+===+===
+    #            - | X | -               
+    #           ===+===+===
+    #            X | - | - 
+    #
+    # @argument board is a reference to the string array (board).
+    # @argument n is the board size (number of rows/cols).
+    #
+    # @return true if a player has won diagonally. Otherwise, returns false.
+        
     diag_values = []
     count = 0
     
