@@ -1,10 +1,12 @@
+# ------------------------------------------------------------------------
+# This ruby file just instantiates the Game class and starts the game.
+# ------------------------------------------------------------------------
+
 require_relative "./classes/Game"
 
-TEST = false
+# instantiates the Game class
+game = Game.new
 
-if !TEST
-  game = Game.new
-  game.start_game
-else
-  # testing
-end
+# starts the game
+game.start_game
+
