@@ -29,7 +29,7 @@ module MovementGetters
     as = get_available_spaces(board, player_mark, adversary_mark)
 
     # message to indicate whose turn it is
-    puts "COMPUTERS'S TURN:"
+    puts "COMPUTER IS PLAYING..."
         
     case difficulty
     when 1 # newbie
@@ -88,7 +88,7 @@ module MovementGetters
     # @return move is the human move (int).
 
     # messages to indicate whose turn it is
-    puts "HUMAN'S TURN:"
+    puts "YOUR TURN, HUMAN..."
     
     move = nil
     

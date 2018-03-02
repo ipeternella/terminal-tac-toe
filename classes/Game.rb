@@ -15,8 +15,8 @@ class Game
   include BoardScans         # module for scanning the board for ties and wins
   include GameConfig         # module for the game configuration
 
-  # attribute readers (testing)
-  attr_reader :board, :n, :p1_mark, :p2_mark, :difficulty, :game_type
+  # attribute accessor (testing)
+  attr_accessor :board, :n, :p1_mark, :p2_mark, :difficulty, :game_type
   
   def initialize    
     @board      = nil    # string array with number indexes

@@ -169,7 +169,7 @@ module GameConfig
     
     board = []
     
-    (0 .. n * n).each do |i| 
+    (0 .. n ** 2 - 1).each do |i| 
       board << i.to_s
     end
 
