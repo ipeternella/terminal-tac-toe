@@ -1,7 +1,7 @@
 # Terminal Tac Toe 
 
 Terminal Tac Toe is a tic tac toe game developed with the Ruby language. The game has been expanded
-with some extra features and can be played on a any terminal.
+with some extra features and can be played on any terminal.
 
 ## Features
 
@@ -18,7 +18,7 @@ To run the game, just clone this repo and execute ```tictactoe.rb```.
 
 ## File Summary
 
-```tictactoe.rb``` **-->** creates a game instance and starts the game; <br/>
+```/tictactoe.rb``` **-->** creates a game instance and starts the game; <br/>
 ```/classes/Game.rb``` **-->** game class which contains the game loop, runs the game configuration and executes the game; <br/>
 ```/modules/BoardScan.rb``` **-->** methods to scan the board for vertical, horizontal and diagonal wins or ties; <br/>
 ```/modules/GameConfig.rb``` **-->** methods to get user input in order to configure the game (board size, game mode, etc.); <br/>
@@ -29,9 +29,9 @@ To run the game, just clone this repo and execute ```tictactoe.rb```.
 
 ## Game Modes
 
-* **NEWBIE:** computer makes **random** moves only;
-* **MEDIUM:** computer makes random moves but blocks adversary movements when they are about to win;
-* **HARD:** computer makes random moves, blocks adversary movements and also scans for possible moves to win the match.
+* **NEWBIE:** computer makes **random moves only**;
+* **MEDIUM:** computer makes random moves but **blocks adversary movements** when they are about to win;
+* **HARD:** computer makes random moves, blocks adversary movements and also scans for **possible moves to win the match**.
 
 ## Player Mark Customization
 
