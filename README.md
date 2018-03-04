@@ -37,7 +37,60 @@ To run the game, just clone this repo and execute ```tictactoe.rb```.
 
 The traditional tic tac toe player marks ```X``` and ```O``` which are drawn on the tic tac toe's board can be customized to any single letter. As an example, one player can use a ```Z``` mark and the other one a ```W``` mark. 
 
+**Traditional marks (X, O):**
+
+```
+  X |  O |  O
+====+====+====
+  O |  X |  X
+====+====+==== 
+  X |  O |  X 
+```
+
+**Customized marks (Z, W):**
+
+```
+  Z |  W |  W
+====+====+====
+  W |  Z |  Z
+====+====+==== 
+  Z |  W |  Z 
+```
+
+
 ## Board Size Selection
 
 Tired of easy and quick matches on a 3x3 board? Just select a board with 4 or 5 rows for more brain-intensive matches! The actual limit is a 5x5 board! Actually, bigger boards will be executed properly but are just too long and boring! Hence, I've set a maximum of 5 rows and cols (and a minimum of a 3x3 board, of course).
 
+**3 x 3 board:**
+```
+  0 |  1 |  2
+====+====+====
+  3 |  4 |  5
+====+====+==== 
+  6 |  7 |  8 
+```
+
+**4 x 4 board:**
+```
+  0 |  1 |  2 |  3
+====+====+====+====
+  4 |  5 |  6 |  7
+====+====+====+==== 
+  8 |  9 | 10 | 11
+====+====+====+====
+ 12 | 13 | 14 | 15
+```
+
+**5 x 5 board:**
+```
+  0 |  1 |  2 |  3 |  4
+====+====+====+====+====
+  5 |  6 |  7 |  8 |  9
+====+====+====+====+====
+ 10 | 11 | 12 | 13 | 14
+====+====+====+====+====
+ 15 | 16 | 17 | 18 | 19
+====+====+====+====+====
+ 20 | 21 | 22 | 23 | 24
+ ```
