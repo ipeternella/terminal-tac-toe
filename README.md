@@ -29,9 +29,15 @@ To run the game, just clone this repo and execute ```tictactoe.rb```.
 
 ## Game Modes
 
+* Player vs Computer;
+* Player vs Player (two players must share the same keyboard);
+* Computer vs Computer (watch the machine struggle against itself!);
+
+## Game Difficulty Levels
+
 * **NEWBIE:** computer makes **random moves only**;
 * **MEDIUM:** computer makes random moves but **blocks adversary movements** when they are about to win;
-* **HARD:** computer makes random moves, blocks adversary movements and also scans for **possible moves to win the match**.
+* **HARD:** computer does as mentioned above and also **scans the board for possible moves to win the match**.
 
 ## Player Mark Customization
 
