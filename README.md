@@ -19,13 +19,13 @@ To run the game, just clone this repo and execute ```tictactoe.rb```.
 ## File Summary
 
 ```/tictactoe.rb``` **-->** creates a game instance and starts the game; <br/>
-```/classes/Game.rb``` **-->** class that contains the method with the **main game loop**; <br/>
+```/classes/Game.rb``` **-->** class that contains the method **start_game** which executes the **main game loop**; <br/>
 ```/modules/BoardScan.rb``` **-->** methods to scan the board for vertical, horizontal and diagonal wins or ties; <br/>
 ```/modules/GameConfig.rb``` **-->** methods to get user input in order to configure the game (board size, game mode, etc.); <br/>
 ```/modules/MovementGetters.rb``` **-->** methods to get human input and to generate computer moves based on game difficulty; <br/>
 ```/tests/test_boardscan.rb``` **-->** some integration tests of the BoardScan module methods; <br/>
 ```/tests/test_gameconfig.rb``` **-->** some integration tests of the GameConfig module methods; <br/>
-```/tests/test_boardscan.rb``` **-->** some integration tests of the BoardScan module methods. <br/>
+```/tests/test_movementgetters.rb``` **-->** some integration tests of the MovementGetters module methods. <br/>
 
 ## Game Modes
 
