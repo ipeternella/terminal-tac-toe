@@ -60,7 +60,7 @@ The traditional tic tac toe player marks ```X``` and ```O``` which are drawn on 
 
 ## Board Size Selection
 
-Tired of easy and quick matches on a 3x3 board? Just select a board with 4 or 5 rows for more brain-intensive matches! The actual limit is a 5x5 board! Actually, bigger boards will be executed properly but are just too long and boring! Hence, I've set a maximum of 5 rows and cols (and a minimum of a 3x3 board, of course).
+Tired of easy and quick matches on a 3x3 board? Just select a board with 4 or 5 rows for more brain-intensive matches!
 
 **3 x 3 board:**
 ```
@@ -94,3 +94,6 @@ Tired of easy and quick matches on a 3x3 board? Just select a board with 4 or 5 
 ====+====+====+====+====
  20 | 21 | 22 | 23 | 24
  ```
+
+I've set a maximum limit of 5 rows and cols (5x5 board) because matches on bigger boards take just too long and are boring. 
+However, **if the input validation up to 5 rows and cols is removed**, all the game code and board printing will work just as fine.
