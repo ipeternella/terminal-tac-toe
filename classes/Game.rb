@@ -140,12 +140,12 @@ class Game
         # computes computer 1's move
         com_move = get_com_move(board, n, difficulty, p1_mark, p2_mark)
         board[com_move] = p1_mark
+        
+        # prints board after move
+        puts_board(board, n)
 
         # delay for player to watch the moves
         sleep(COMPUTER_VS_COMPUTER_DELAY)
-        
-        # prints board after move
-        puts_board(board, n)        
         
         # checks if game the is over
         break if is_game_over(board, n, p1_mark, p2_mark)
@@ -153,12 +153,12 @@ class Game
         # computes computer 2's movement
         com_move2 = get_com_move(board, n, difficulty, p2_mark, p1_mark)
         board[com_move2] = p2_mark
-
-        # delay for player to watch the moves
-        sleep(COMPUTER_VS_COMPUTER_DELAY)
         
         # prints board after move
         puts_board(board, n)
+
+        # delay for player to watch the moves
+        sleep(COMPUTER_VS_COMPUTER_DELAY)
         
         # checks if game is over
         break if is_game_over(board, n, p1_mark, p2_mark)
